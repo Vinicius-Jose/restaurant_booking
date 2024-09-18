@@ -1,0 +1,57 @@
+{% extends "restaurant/layout.html" %}
+{% block body %}
+{% load static %}
+<div class="login-form-1 col-md-8 mx-auto">
+    <h2> Lets create your tables:</h2>
+
+    <h5> How you wanna do?</h5>
+    <p style="text-align: left;"> In the auto mode you can choose how much tables you wanna, and how
+        much tables have 4 or 8
+        seats</p>
+    <p style="text-align: left;">In the personalize mode you can choose the number of seats for each
+        table </p>
+    <button id="auto_generate" class="btn btn-light mt-2"> Auto Generate Tables</button>
+    <button id="custom" class="btn btn-light mt-2"> Personalize Tables</button>
+
+
+    <form id="auto_tables" action="" method="post" class="form-group" hidden>
+        {% csrf_token %}
+        <input type="hidden" id="restaurant_id" name="restaurant_id" value="{{restaurant_id}}">
+        <div>
+            <label for="num_tables" class="form-label">Number of tables</label>
+            <input type="number" class="form-control" id="num_tables" placeholder="1">
+        </div>
+        <div>
+            <label for="tables_4_seats" class="form-label">How much tables with 4 seats</label>
+            <input type="number" class="form-control" id="tables_4_seats" placeholder="0" value="0" disabled>
+        </div>
+
+        <div>
+            <label for="tables_8_seats" class="form-label">How much tables with 8 seats</label>
+            <input type="number" class="form-control" id="tables_8_seats" placeholder="0" value="0" disabled>
+        </div>
+        <input id="save_generate" type="submit" class="btn btn-light mt-2" value="Generate" disabled></input>
+
+    </form>
+    <div id="message" class="alert alert-danger" role="alert" hidden>
+        {{message}}
+    </div>
+
+    <div id="custom_table_div" hidden>
+        <form id="custom_tables" action="" method="post" class="form-group">
+            {% csrf_token %}
+            <input type="hidden" name="restaurant_id" value="{{restaurant_id}}">
+            <div>
+                <h3 id="num_custom_tables" class="form-label">Number of tables: 0</h3>
+
+            </div>
+
+        </form>
+        <button id="save_custom" type="submit" class="btn btn-light mt-2" value="Save">Save</button>
+        <button id="add" class="btn btn-light mt-2"> Add</button>
+        <button id="remove" class="btn btn-light mt-2"> Remove </button>
+    </div>
+</div>
+<script src="{% static 'restaurant/tables.js' %}"></script>
+
+{% endblock %}

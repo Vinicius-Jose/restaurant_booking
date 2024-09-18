@@ -1,0 +1,72 @@
+{% extends "restaurant/layout.html" %}
+{% load static %}
+{% block body %}
+
+<h3 class="mb-5 mt-2"> Bookings {{status}} for : {{target_booking}}</h3>
+<div class="row g-2 ms-4">
+    {% if restaurant %}
+
+    <div class="form-group mb-2 col-auto">
+        <input type="hidden" id="restaurant_id" value="{{restaurant.id}}">
+        <label for="data">Choose a date:</label>
+        <input type="date" class="form-control" id="date" name="date" placeholder="Choose a date" value="{{date}}"
+            min="{{min_date}}">
+    </div>
+    {% endif %}
+    <div class="dropdown mb-2 col-auto" style="align-content: end;">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Choose the status
+        </button>
+        <ul class="dropdown-menu">
+            {% if restaurant %}
+            <li><a class="dropdown-item" href="{% url 'bookings' restaurant.id 0 %}?date={{date}}">Waiting</a></li>
+            <li><a class="dropdown-item" href="{% url 'bookings' restaurant.id 1 %}?date={{date}}">Cancelled</a></li>
+            <li><a class="dropdown-item" href="{% url 'bookings' restaurant.id 2 %}?date={{date}}">Confirmed</a></li>
+            {% else %}
+            <li><a class="dropdown-item" href="{% url 'bookings' 0 %}">Waiting</a></li>
+            <li><a class="dropdown-item" href="{% url 'bookings' 1 %}">Cancelled</a></li>
+            <li><a class="dropdown-item" href="{% url 'bookings' 2 %}">Confirmed</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</div>
+<div class="row ms-2">
+    {% for booking in bookings %}
+    <div class="col-sm-6 mb-3 mb-sm-0 card-container">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">{{booking.table.restaurant.name}}: {{booking.date_time}}</h5>
+                <p class="card-text">Table number: {{booking.table.number}}</p>
+                <p class="card-text">Table for : {{booking.table.seats}} peoples</p>
+                {% if request.user == booking.table.restaurant.owner %}
+                <p class="card-text">Booking for : {{booking.client.first_name}}
+                    <a data-bs-toggle="popover" role="button" class="btn btn-secondary btn-sm"
+                        data-bs-title="Contact: {{booking.client.first_name}} {{bookin.client.last_name}}"
+                        data-bs-content="Email: {{booking.client.email}}    Phone: {{booking.client.phone_number}}"
+                        data-bs-trigger="focus" tabindex="0">Contact</a>
+                </p>
+                {% endif %}
+                {% if request.user == booking.table.restaurant.owner or request.user == booking.client %}
+                {% if booking.status == 0 %}
+                <a id="cancel" data-booking="{{booking.id}}" data-status="1" class="btn btn-light">Cancel</a>
+
+
+                {% if request.user == booking.table.restaurant.owner%}
+                <a id="confirm" data-booking="{{booking.id}}" data-status="2" class="btn btn-light">Confirm</a>
+                {% endif %}
+                {% endif %}
+                {% endif %}
+
+
+
+
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+
+<script src="{% static 'restaurant/booking.js' %}"></script>
+{% endblock %}

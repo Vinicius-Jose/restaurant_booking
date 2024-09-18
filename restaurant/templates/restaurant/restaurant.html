@@ -1,0 +1,144 @@
+{% extends "restaurant/layout.html" %}
+{% load static %}
+{% block body %}
+<div class="card mt-2 restaurant_card">
+
+    <div class="card-header text-center">
+        <h3>{{restaurant.name}}</h3>
+    </div>
+    {% if restaurant.background_image%}
+    <div class="image-container">
+        <img src="{{restaurant.background_image.url}}" class="card-img-top img-fluid rounded mx-auto d-block"
+            alt="{{restaurant.name}} background">
+    </div>
+    {% endif %}
+    <div class="card-body">
+        <div class="row g-0">
+            <div class="col-md-1 mx-2 ">
+                <img src="{{restaurant.logo.url}}" class="float-start image-border mr-1" alt="{{restaurant.name}} logo">
+            </div>
+
+            <div class="col-md-8 mb-2">
+                <h5 class="card-title">{{restaurant.name}}</h5>
+                <p class="card-text">{{restaurant.description}}</p>
+                <div class="card-text">
+                    <li>Details:
+                        <ul>
+                            <li>Open: {{restaurant.open_hour.hour}}:{{restaurant.open_hour.minute}}</li>
+                            <li>Close: {{restaurant.close_hour.hour}}:{{restaurant.close_hour.minute}}</li>
+                            <li>Booking duration: {{restaurant.booking_time.hour}}:{{restaurant.booking_time.minute}}
+                            </li>
+                            <li>Days of Work:
+                                <ul>
+                                    {% for day in restaurant.days_open.all%}
+                                    <li> {{day.day_of_week}}</li>
+                                    {% endfor %}
+                                </ul>
+                            </li>
+                            <li>Average Pirce: ${{restaurant.average_price_dollars|floatformat:2}}</li>
+                            <li>Address: {{restaurant.address}}</li>
+                            <li> <a href="{{restaurant.site}}">Official site </a></li>
+                            <li>Phone: {{restaurant.phone}}</li>
+                            <li class="card-text">Category : <a
+                                    href="{% url 'restaurant'%}?search={{restaurant.category.name}}">{{restaurant.category.name}}</a>
+                            </li>
+                        </ul>
+                </div>
+                {% if restaurant.menu %}
+                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#menuModal">
+                    Open Menu
+                </button>
+
+                {% endif %}
+                {% if request.user.type_user == "CUSTOMER" %}
+                <a class="btn btn-light" data-bs-toggle="offcanvas" href="#bookingform" role="button"
+                    aria-controls="offcanvasExample">
+                    Booking
+                </a>
+                {% elif restaurant.owner == request.user %}
+                <a class="btn btn-light" href="{% url 'bookings' restaurant.id 0 %}">
+                    See Bookings
+                </a>
+                <a class="btn btn-light" href="{% url 'update_restaurant' restaurant.id %}">
+                    Edit
+                </a>
+
+                <a type="button" class="btn btn-light" href="{% url 'tables' restaurant.id %}">Edit tables</a>
+
+                <a type="button" class="btn btn-dark " onclick="history.back()">Cancel</a>
+                {% endif %}
+
+            </div>
+        </div>
+        <div class="card-footer text-body-secondary">
+
+        </div>
+    </div>
+
+
+
+    {% if request.user.type_user == "CUSTOMER" %}
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="bookingform" aria-labelledby="offcanvasScrollingLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Booking a table</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <form method="post" action="{% url 'booking' restaurant.id %}">
+                {% csrf_token %}
+                <input type="hidden" id="restaurant_id" value="{{restaurant.id}}">
+                <div class="form-group">
+                    <label for="data">Choose a date:</label>
+                    <input type="date" class="form-control" id="date" name="date" placeholder="Choose a date"
+                        min="{{min_date}}">
+                </div>
+                <div class="form-group mt-2 " hidden>
+                    <label for="times">Select hour:</label>
+                    <div id="times" class="btn-group mt-2 tables_grid" role="group" aria-label="Possible times">
+                        {% for time in booking_times %}
+                        <input type="radio" class="btn-check" name="btnradio" value={{time}} id="{{time}}"
+                            autocomplete="off">
+                        <label class="btn btn-outline-primary" for="{{time}}">{{time}}</label>
+                        {% endfor %}
+
+                    </div>
+                </div>
+                <h3 id="not_found_message" hidden>No table is available. Please select another day or hour</h3>
+                <div class="form-group mt-2" hidden>
+                    <label for="tables">Select Table:</label>
+                    <div id="tables" class="btn-group mt-2 tables_grid" role="group" aria-label="Tables available"
+                        name="group2">
+                    </div>
+
+                </div>
+                <button class="btn btn-light mt-2" type="submit" aria-controls="offcanvasExample" id="save_booking"
+                    hidden>
+                    Save Booking
+                </button>
+            </form>
+        </div>
+    </div>
+
+
+    <script src="{% static 'restaurant/restaurant.js' %}"></script>
+    {%endif%}
+    {% if restaurant.menu %}
+    <!-- Modal -->
+    <div class="modal fade" id="menuModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable  modal-dialog-centered" style="min-width: 75%;">
+            <div class="modal-content text-center">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5 text-center" id="ModalLabel">Menu</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img src="{{restaurant.menu.url}}" style="max-width: 80% ">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock%}

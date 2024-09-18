@@ -1,0 +1,73 @@
+{% extends "restaurant/layout.html" %}
+{% block body %}
+<div class="container login-container">
+
+
+    <div class="row">
+        <h2 class="text-center">Restaurant Booking</h2>
+        <div class="col-md-6 login-form-1">
+            <h3>Login as Customer</h3>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" placeholder="Email *" name="email" value="" required />
+                </div>
+                <div class="form-group mb-3">
+                    <input type="password" class="form-control" placeholder="Password *" name="password" value=""
+                        required />
+                </div>
+                <div class=" form-group mb-3">
+                    <input type="submit" class="btnSubmit" value="Login" />
+                </div>
+                <input type="hidden" name="type_user" value="CUSTOMER" />
+            </form>
+            <div class="form-group mb-3">
+                <p class="text-white">Don't have an account <a href="{% url 'register' %}"
+                        class="text-decoration-none ">click here</a> and
+                    create
+                    one</p>
+            </div>
+            {% if message_customer %}
+            <div class="alert alert-danger" role="alert">
+                {{message_customer}}
+            </div>
+            {%endif%}
+
+        </div>
+
+        <div class="col-md-6 login-form-2">
+            <div class="login-logo">
+                <img src="https://image.ibb.co/n7oTvU/logo_white.png" alt="" />
+            </div>
+            <h3>Login as Restaurant Owner</h3>
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="form-group mb-3">
+                    <input type="text" class="form-control" placeholder="Email *" name="email" value="" required />
+                </div>
+                <div class="form-group mb-3">
+                    <input type="password" class="form-control" placeholder="Password *" name="password" value=""
+                        required />
+                </div>
+                <div class="form-group mb-3">
+                    <input type="submit" class="btnSubmit" value="Login" />
+                </div>
+                <input type="hidden" name="type_user" value="SUPPLIER" />
+            </form>
+            <!-- 
+            <div class="form-group">
+
+                <a href="#" class="btn btn-outline-light" value="Login">Forget Password?</a>
+            </div>
+            -->
+            </form>
+            {% if message_supplier %}
+            <div class="alert alert-danger" role="alert">
+                {{message_supplier}}
+            </div>
+            {%endif%}
+
+        </div>
+
+    </div>
+    {% endblock %}

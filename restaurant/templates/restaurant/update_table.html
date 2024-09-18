@@ -1,0 +1,62 @@
+{% extends "restaurant/layout.html" %}
+{% block body %}
+{% load static %}
+<div id="custom_table_div" class="login-form-1 col-md-8 mx-auto">
+    <div id="custom_tables" class="form-group">
+        {% csrf_token %}
+        <input type="hidden" id="restaurant_id" name="restaurant_id" value="{{restaurant_id}}">
+        <div>
+            <h3 id="num_custom_tables" class="form-label">Number of tables: {{ total_seats }}</h3>
+
+        </div>
+        {% for table in table_list%}
+        <div id="{{table.id}}" data-table-number="{{table.number}}" class="mb-3">
+            <h5>Table nº: {{table.number}}</h5>
+            <select id="select_{{table.number}}" class="form-select mt-2">
+                {% if table.seats == 4%}
+                <option value="4" selected>4 seats</option>
+                {% else %}
+                <option value="4">4 seats</option>
+                {%endif%}
+                {% if table.seats == 8%}
+                <option value="8" selected>8 seats</option>
+                {% else %}
+                <option value="8">8 seats</option>
+                {%endif%}
+            </select>
+
+            <button class="btn btn-light mt-2" data-bs-toggle="modal" data-bs-target="#modalRemove{{table.id}}"> Remove
+            </button>
+
+            <!-- MODAL -->
+            <div class="modal fade" id="modalRemove{{table.id}}" tabindex="-1" aria-labelledby="modalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="modalLabel">Remove table nº {{table.number}}</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure? If you remove this table any information and bookings will be removed too
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button id="remove" type="button" class="btn btn-primary"
+                                data-table-id="{{table.id}}">Remove</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {%endfor%}
+    </div>
+    <button id="save_custom" type="submit" class="btn btn-light mt-2" value="Save">Save</button>
+    <button id="add" class="btn btn-light mt-2"> Add</button>
+</div>
+
+<script src="{% static 'restaurant/update_tables.js' %}"></script>
+
+
+</div>
+{%endblock%}

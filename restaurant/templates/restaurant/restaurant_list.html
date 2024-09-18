@@ -1,0 +1,32 @@
+{% extends "restaurant/layout.html" %}
+{% load static %}
+{% block body %}
+<h3 class="mb-5 mt-3"> {{title}}</h3>
+<div class="row ms-2">
+
+    {% for restaurant in restaurant_list %}
+
+    <div class="card mb-3" style="max-width: 30%;">
+        <div class="row g-0 " style="min-height: 170px;">
+            <div class="col-md-4">
+                <img style="max-height: 170px;height: 100%; object-fit: cover;" src="{{restaurant.logo.url}}"
+                    class="img-fluid rounded-start" alt="Restaurant logo">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h5 class="card-title">{{restaurant.name}}</h5>
+                    <p class="card-text">Category : <a
+                            href="{% url 'restaurant'%}?search={{restaurant.category.name}}">{{restaurant.category.name}}</a>
+                    </p>
+                    <p class="card-text"><small class="text-body-secondary"><a id="view_restaurant"
+                                href="{% url 'restaurant' restaurant.id %}" class="btn btn-light">View
+                                Restaurant</a></small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+
+{% endblock %}

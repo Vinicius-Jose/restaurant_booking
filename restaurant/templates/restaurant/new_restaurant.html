@@ -1,0 +1,48 @@
+{% extends "restaurant/layout.html" %}
+{% block body %}
+
+<div class="login-form-1 col-md-8 mx-auto">
+    {% if restaurant_id %}
+    <h3>Edit your restaurant</h3>
+    <form action="{% url 'update_restaurant' restaurant_id  %}" method="post" class="" enctype="multipart/form-data">
+
+        {%else %}
+        <h3>Register your restaurant</h3>
+        <form action="{% url 'restaurant'  %}" method="post" class="" enctype="multipart/form-data">
+            {% endif %}
+
+            {% csrf_token %}
+
+            <div class="form-group ">
+                {{form}}
+                <label for="id_days_open" class="labels-white">Days of work:</label>
+                <div class="container-fluid">
+
+                    {% for day in days_of_week %}
+                    <div class="form-check">
+                        {% if day.id in days_of_work %}
+                        <input class="form-check-input" type="checkbox" name="day_{{day.id}}" value="{{day.id}}"
+                            id="{{day.id}}" checked>
+                        {% else %}
+                        <input class="form-check-input" type="checkbox" name="day_{{day.id}}" value="{{day.id}}"
+                            id="{{day.id}}">
+                        {% endif%}
+                        <label class="form-check-label" for="{{day.id}}" style="padding: 0;">
+                            {{day.day_of_week}}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <input type="submit" class="btn btn-light mt-2" value="Save"></input>
+        </form>
+        {% if restaurant_id %}
+        <a type="button" class="btn btn-dark mt-3" href="{% url 'restaurant' restaurant_id %}">Cancel</a>
+        <a type="button" class="btn btn-light mt-3" href="{% url 'tables' restaurant_id %}">Edit tables</a>
+        {% endif %}
+</div>
+
+{%endblock%}
+{% block script%}
+
+{% endblock%}

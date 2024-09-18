@@ -1,0 +1,52 @@
+{% extends "restaurant/layout.html" %}
+{% block body %}
+<div class="container">
+    <div class="col-md-8 login-form-1 mx-auto">
+        {% if user.is_authenticated %}
+        <h3>Edit your account</h3>
+        {% else %}
+        <h3>Create your account</h3>
+        {% endif %}
+        {% if message %}
+        <div class="alert alert-danger" role="alert">
+            {{message}}
+        </div>
+        {%endif%}
+        <form action="{% url 'register'  %}" method="post" class="form-group">
+            {% csrf_token %}
+            <div class="form-group">
+                {{form}}
+            </div>
+            <div>
+                <label for="id_confirm_password" class="col-form-label labels-white">Confirm Password: </label>
+                <input type="password" name="confirm_password" class="form-control col-50 mb-2 " required=""
+                    id="id_confirm_password">
+            </div>
+            {% if user.is_authenticated %}
+            <input type="submit" class="btn btn-light mt-2" value="Save"></input>
+            {% else %}
+            <input type="submit" class="btn btn-light mt-2" value="Register"></input>
+            {% endif %}
+        </form>
+        {% if user.is_authenticated %}
+        <a type="button" class="btn btn-dark mt-3" onclick="history.back()">Cancel</a>
+        {% else %}
+        <a type="button" class="btn btn-dark mt-3" href="{% url 'login' %}">Cancel</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{%endblock%}
+{% block script%}
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('label').forEach(function (label) {
+            label.classList.add('col-form-label');
+            label.classList.add('labels-white');
+        });
+    })
+
+</script>
+{% endblock%}
